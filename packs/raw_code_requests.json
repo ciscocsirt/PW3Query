@@ -1,0 +1,22 @@
+{
+	"queries": {
+		"pastebin_raw1": {
+			"query": "\"<script src=http://pastebin.com/raw\" \"pastebin.com/raw\" snipexp:|(http://pastebin.com/raw/[\\w*]+)|i",
+			"category": "Raw Code Request",
+			"notes": "Suspicious script tag pointing to raw code on pastebin. Download the raw code to determine if the content is malicious.",
+			"snippet": "yes"
+		},
+		"git_raw1": {
+			"query": "\"<script src=https://rawgit.com\" snipexp:|src=\"(https://rawgit.com/.*?)\"|i",
+			"category": "Raw Code Request",
+			"notes": "Script tag pointing to raw code on github.",
+			"snippet": "yes"
+		},
+		"github_raw1": {
+			"query": "\"<script src=https://github.com\" snipexp:|src=\"(https://github.com/.*?)\"|i",
+			"category": "Raw Code Request",
+			"notes": "Script tag pointing to raw code on github.",
+			"snippet": "yes"
+		}
+	}
+}

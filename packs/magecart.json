@@ -1,0 +1,34 @@
+{
+	"queries": {
+		"magecart1": {
+			"query": "\"www.google-analytics.cm\"",
+			"category": "MageCart",
+			"notes": "Credit card skimming script. Ref: https://blog.sucuri.net/2019/02/google-analytics-and-angular-in-magento-credit-card-stealing-scripts.html",
+			"snippet": "yes"
+		},
+		"magecart2": {
+			"query": "\"www.googlc-analytics.cm\"",
+			"category": "MageCart",
+			"notes": "Credit card skimming script. Ref: https://blog.sucuri.net/2019/02/google-analytics-and-angular-in-magento-credit-card-stealing-scripts.html",
+			"snippet": "yes"
+		},
+		"magecart3": {
+			"query": "\"www.gooqletagmanager.com\"",
+			"category": "MageCart",
+			"notes": "Credit card skimming script. Ref: https://blog.sucuri.net/2019/02/google-analytics-and-angular-in-magento-credit-card-stealing-scripts.html",
+			"snippet": "yes"
+		},
+		"magecart4": {
+			"query": "\"googletagmanager.eu\"",
+			"category": "MageCart",
+			"notes": "Credit card skimming script. Ref: https://blog.sucuri.net/2019/02/google-analytics-and-angular-in-magento-credit-card-stealing-scripts.html",
+			"snippet": "yes"
+		},
+		"magecart5": {
+			"query": "Angular.algularToken,Angular.angularCdn",
+			"category": "MageCart",
+			"notes": "Credit card skimming script. Ref: https://blog.sucuri.net/2019/02/google-analytics-and-angular-in-magento-credit-card-stealing-scripts.html",
+			"snippet": "yes"
+		}
+	}
+}

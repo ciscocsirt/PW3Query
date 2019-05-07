@@ -1,0 +1,10 @@
+{
+  "queries": {
+    "hackedby_in_title": {
+      "query": "\"<title>Hacked by\" \"Hacked by\"",
+      "category": "Defacement",
+      "notes": "Potential website defacement, query is based on seeing Hacked By in the title, but may lead to a false positive.",
+      "snippet": "yes"
+    }
+  }
+}

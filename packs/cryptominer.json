@@ -1,0 +1,22 @@
+{
+	"queries": {
+		"coinhive_cryptominer": {
+			"query": "\"/lib/coinhive.min.js\"",
+			"category": "CryptoMiner",
+			"notes": "Coinhive is a JavaScript miner for Monero Blockchain.",
+			"snippet": "no"
+		},
+		"minr_cryptominer": {
+			"query": "\"inject.js?key=\" snipexp:|src=\"([^\\s]+inject\\.js\\?key=[^\\s]+)\\\"|i",
+			"category": "CryptoMiner",
+			"notes": "Minr is a Monero crypto-mining service.",
+			"snippet": "no"
+		},
+		"traffic2bitcoin_service": {
+			"query": "\"traffic2bitcoin.com/ptp.php?ref\"  snipexp:|(traffic2bitcoin\\.com/ptp\\.php\\?ref=\\w+)|i",
+			"category": "CryptoMiner",
+			"notes": "Traffic2bitcoin is a paid-to-promote service that pays users in bitcoin to promote their PTP link (usually a hidden iframe).",
+			"snippet": "yes"
+		}
+	}
+}

@@ -1,0 +1,194 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Create resources for PW3Query
+
+Parameters:
+  PW3APIPARAM:
+    Default: ""
+    Type: String
+    NoEcho: true
+  BUCKETNAME:
+    Default: ""
+    Type: String
+
+Resources:
+  FunctionPW3QueryDispatch:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: PW3Query-Dispatch
+      Handler: dispatch_lambda.lambda_handler
+      Runtime: python3.7
+      CodeUri: 'src/'
+      Description: 'Get query packs from S3 and dispatch each query to the work queue.'
+      MemorySize: 128
+      Timeout: 20
+      Role:
+        Fn::GetAtt:
+          - "RolePW3QueryDispatch"
+          - "Arn"
+      Events:
+        DispatchSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(4 days)
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref BUCKETNAME
+
+  FunctionPW3QueryFetchAndProcess:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: PW3Query-FetchAndProcess
+      Handler: process_lambda.lambda_handler
+      Runtime: python3.7
+      CodeUri: 'src/'
+      Description: 'Retrieve results from PublicWWW, format the results, and save to S3.'
+      MemorySize: 128
+      Timeout: 20
+      Role:
+        Fn::GetAtt:
+          - "RolePW3QueryFetchAndProcess"
+          - "Arn"
+      Environment:
+        Variables:
+          PW3API_KEY: !Ref PW3APIPARAM
+          BUCKET_NAME: !Ref BUCKETNAME
+      Events:
+        Schedule1:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 minute)
+
+  RolePW3QueryDispatch:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: "PW3Query-DispatchRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  RolePW3QueryFetchAndProcess:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: "PW3Query-FetchAndProcess"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  PolicyPWQueryDispatchPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "PW3QueryDispatchPolicy"
+      Roles:
+        - !Ref RolePW3QueryDispatch
+      PolicyDocument:
+        Statement:
+          - Resource: !Sub "arn:aws:s3:::${BUCKETNAME}"
+            Action:
+              - 's3:List*'
+            Effect: Allow
+          - Resource: !Sub "arn:aws:s3:::${BUCKETNAME}/packs/*"
+            Action:
+              - 's3:GetObject'
+              - 's3:List*'
+            Effect: Allow
+          - Resource:
+              Fn::GetAtt:
+                - QueuePW3Query
+                - Arn
+            Action:
+              - "sqs:SendMessage"
+              - "sqs:GetQueueAttributes"
+              - "sqs:GetQueueUrl"
+              - "sqs:ListQueues"
+              - "sqs:SendMessageBatch"
+              - "sqs:SendMessage"
+            Effect: Allow
+
+  PolicyPWQueryFetchAndProcessPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "PW3QueryFetchAndProcessPolicy"
+      Roles:
+        - !Ref RolePW3QueryFetchAndProcess
+      PolicyDocument:
+        Statement:
+          - Resource: !Sub "arn:aws:s3:::${BUCKETNAME}"
+            Action:
+              - 's3:List*'
+            Effect: Allow
+          - Resource: !Sub "arn:aws:s3:::${BUCKETNAME}/results/*"
+            Action:
+              - 's3:PutObject'
+            Effect: Allow
+          - Resource:
+              Fn::GetAtt:
+                - QueuePW3Query
+                - Arn
+            Action:
+              - "sqs:ReceiveMessage"
+              - "sqs:GetQueueAttributes"
+              - "sqs:GetQueueUrl"
+              - "sqs:DeleteMessage"
+            Effect: Allow
+
+  PolicyPW3QueryUserS3ReadOnly:
+    Type: AWS::IAM::Policy
+    Properties:
+      Users:
+        - !Ref PW3QueryUser
+      PolicyName: "PW3QueryUserS3ReadOnlyPolicy"
+      PolicyDocument:
+        Statement:
+          - Resource: !Sub "arn:aws:s3:::${BUCKETNAME}"
+            Action:
+              - 's3:List*'
+            Effect: Allow
+          - Resource: !Sub "arn:aws:s3:::${BUCKETNAME}/results/*"
+            Action:
+              - 's3:GetObject'
+              - 's3:List*'
+            Effect: Allow
+          - Resource: "arn:aws:s3:::*"
+            Effect: Allow
+            Action:
+              - "s3:ListAllMyBuckets"
+              - "s3:ListBucket"
+              - "s3:ListObjects"
+
+
+
+  QueuePW3Query:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      QueueName: 'PW3Query-Queue.fifo'
+      FifoQueue: True
+      ContentBasedDeduplication: True
+      DelaySeconds: '0'
+      MaximumMessageSize: '262144'
+      MessageRetentionPeriod: '86400'
+      ReceiveMessageWaitTimeSeconds: '0'
+      VisibilityTimeout: '30'
+
+  PW3QueryUser:
+    Type: AWS::IAM::User
+    Properties: 
+      UserName: PW3QueryUser

@@ -1,0 +1,22 @@
+{
+  "queries": {
+    "gambling_spam1": {
+      "query": "\"https://onlineblackjack.money\"",
+      "category": "Blackhat SEO",
+      "notes": "Spam injection. Look for hidden anchor tags.",
+      "snippet": "yes"
+    },
+    "pharma_spam1": {
+      "query": "\"href=http://www.exlpharmacy\" \"exlpharmacy\"",
+      "category": "Blackhat SEO",
+      "notes": "Pharmacy spam injection. Usually seen in the form of a hidden anchor tag.",
+      "snippet": "yes"
+    },
+    "pharma_spam2": {
+      "query": "\"cialiscom\"",
+      "category": "Blackhat SEO",
+      "notes": "Pharmacy spam injection, usually seen in the form of a hidden anchor tag.",
+      "snippet": "yes"
+    }
+  }
+}
