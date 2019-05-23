@@ -24,7 +24,7 @@ PW3Query is deployed to your own AWS account in the matter of minutes. Query pac
 # Get Started
 Prerequisites:
 * <b>PublicWWW API Key</b> - Sign up at publicwww.com and select a plan (free tier is avialable).
-* <b>AWS CLI</b> - Download and configure the AWS CLI (version >= 1.16 required). Instructions https://docs.aws.amazon.com/lambda/latest/dg/setup-awscli.html.
+* <b>AWS CLI</b> - Download and configure the AWS CLI (version >= 1.16 required). Instructions https://docs.aws.amazon.com/polly/latest/dg/setup-aws-cli.html.
 
 Installation:
 1. <b>PublicWWW API Key:</b> Open "deploy.sh" and look for ```APIKEY=<yourkey>```. Replace ```<yourkey>``` with your PublicWWW API key.
